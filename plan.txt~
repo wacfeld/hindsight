@@ -1,0 +1,7 @@
+can separate days of week into groups (e.g. weekdays, weekends)
+can separate groups of days into time slots
+can make sub-time slots for small exceptions to groups
+list either all days, or certain groups, or certain days, or certain time slots in certain groups
+fine-tuned or comprehensive replace, delete, add (based on rows or columns for comprehensive)
+checklist for current day's tasks
+stats on occurences of activities and time taken up, can be split based on day, time slot, group
