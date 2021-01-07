@@ -10,10 +10,11 @@
 char helptext[] = "date format yyyy_mm_dd or yyyy-mm-dd\n\
 time format hhmm\n\
 commands:\n\
-(h)elp     help\n\
-(s)um      summarize activity between two dates\n\
-s(p)ec     summarize certain activity between two dates\n\
-(c)al      summarize activity by day";
+(h)elp      help\n\
+(s)um       summarize activity between two dates\n\
+s(p)ec      summarize certain activity between two dates\n\
+(c)al       summarize activity by day\n\
+(q)uit      quit, duh";
 
 char wdays[][50] = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
 enum mode{SPEC, SUM, CAL, HELP, ERR, QUIT};
@@ -117,7 +118,6 @@ int tryrange(char *line, int detail)
         int diff = (int) difftime(objtime2, objtime1)/60;
 
         modact(name, ADD, diff);
-        putd(numacts);
         return 1;
     }
 
@@ -150,7 +150,6 @@ void printsum()
 {
     if(numacts == 0)
     {
-        putd(425222);
         putchar('\n');
         return;
     }
@@ -208,19 +207,34 @@ void sumdate()
 
 enum mode choosemode(char *in)
 {
-    if(in[0] == 's')
+    if(streq(in, "sum"))
         return SUM;
-    else if(in[1] == 'p')
+    if(streq(in, "spec"))
         return SPEC;
-    else if(in[0] == 'c')
+    if(streq(in, "cal"))
         return CAL;
-    else if(in[0] == 'h')
+    if(streq(in, "help"))
         return HELP;
-    else if(in[0] == 'q')
+    if(streq(in, "quit"))
         return QUIT;
 
-    else
+    if(strlen(in) > 1)
         return ERR;
+
+    switch(in[0])
+    {
+        case 's':
+            return SUM;
+        case 'p':
+            return SPEC;
+        case 'c':
+            return CAL;
+        case 'h':
+            return HELP;
+        case 'q': return QUIT;
+    }
+
+    return ERR;
 }
 
 void update(struct tm *timestruct)
@@ -271,10 +285,8 @@ int main(int argc, char *argv[])
 
         freeprev();
 
-        putd(1);
         comlen = strlen(command);
 
-    putd(3);
         char *c1, *c2, *c3;
         c1 = strtok(command, " ");
 
@@ -283,12 +295,10 @@ int main(int argc, char *argv[])
         struct tm start = {.tm_mday = 1, .tm_mon = 0, .tm_year = 0};
         struct tm end = {.tm_mday = 1, .tm_mon = 0, .tm_year = 300};
 
-    putd(4);
         if(strlen(c1)+c1 >= command+comlen) ; // no more commands, default to all
 
         else // get specific range, yyyy-mm-dd yyyy-mm-dd
         {
-            putd(41);
             c2 = strtok(NULL, " ");
             if(c2[0] == 'a') ; // all
 
@@ -300,7 +310,6 @@ int main(int argc, char *argv[])
             start.tm_year -= 1900;
             start.tm_mon--;
 
-            putd(42);
 
             if(strlen(c2) + c2 >= command+comlen)
             {
@@ -308,7 +317,6 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            putd(43);
             c3 = strtok(NULL, " ");
             if(c3[0] == 'a') ; // all
 
@@ -347,7 +355,6 @@ int main(int argc, char *argv[])
                 if(buffer[i][0] == '#') // comment
                     continue;
 
-    putd(6);
                 if(trydate(buffer[i]))
                 {
                     if(datecmp(start, curdate) > 0 || datecmp(curdate, end) > 0)
@@ -408,9 +415,6 @@ int main(int argc, char *argv[])
                 else if(tryrange(buffer[i], mode == CAL ? 1 : 0)) ;
                 else if(tryinst(buffer[i])) ;
             }
-            putd(mode);
-            putd(SUM);
-            putd(numacts);
             if(mode == CAL)
             {
                 sumdate();
@@ -418,7 +422,6 @@ int main(int argc, char *argv[])
             }
             else
             {
-                putd(13513515);
                 printsum();
                 freeprev();
             }
