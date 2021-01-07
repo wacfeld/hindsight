@@ -5,7 +5,7 @@
 #define LINELEN 1000
 #define MAXACTS 10000
 #define MAXLINES 10000
-#define putd(x) //printf(#x ": %d\n", x)
+#define putd(x) printf(#x ": %d\n", x)
 
 char helptext[] = "date format yyyy_mm_dd or yyyy-mm-dd\n\
 time format hhmm\n\
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
                         //puts("datecmp worked");
                         //puts(asctime(&oldcurdate));
                         //puts(asctime(&curdate));
-putd(-100);
+
 
     void update(struct tm *timestruct);
                             printf("%04d-%02d-%02d", oldcurdate.tm_year+1900, oldcurdate.tm_mon+1, oldcurdate.tm_mday);
