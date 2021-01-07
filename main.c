@@ -16,7 +16,7 @@ s(p)ec     summarize certain activity between two dates\n\
 (c)al      summarize activity by day";
 
 char wdays[][50] = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
-enum mode{SPEC, SUM, CAL, HELP, ERR};
+enum mode{SPEC, SUM, CAL, HELP, ERR, QUIT};
 
 typedef struct activity
 {
@@ -89,7 +89,7 @@ int trydate(char *line)
     return 0;
 }
 
-int tryrange(char *line)
+int tryrange(char *line, int detail)
 {
     int comp1, comp2;
     int h1,m1, h2,m2;
@@ -97,7 +97,12 @@ int tryrange(char *line)
     time_t objtime1, objtime2;
 
     char *name = malloc(LINELEN);
-    if(sscanf(line, "%d%*[_-]%d %s", &comp1, &comp2, name) == 3)
+    int works = 0;
+    if(detail)
+        works = sscanf(line, "%d%*[_-]%d %[^#]", &comp1, &comp2, name) == 3;
+    else
+        works = sscanf(line, "%d%*[_-]%d %s", &comp1, &comp2, name) == 3;
+    if(works)
     {
         h1 = comp1/100, m1 = comp1 % 100;
         h2 = comp2/100, m2 = comp2 % 100;
@@ -211,6 +216,8 @@ enum mode choosemode(char *in)
         return CAL;
     else if(in[0] == 'h')
         return HELP;
+    else if(in[0] == 'q')
+        return QUIT;
 
     else
         return ERR;
@@ -322,6 +329,10 @@ int main(int argc, char *argv[])
         {
             printf("%s\n", helptext);
         }
+        else if(mode == QUIT)
+        {
+            return 0;
+        }
         else if(mode == SPEC)
         {
 
@@ -394,7 +405,7 @@ putd(-100);
                 }
                 else if(skip)
                     continue;
-                else if(tryrange(buffer[i])) ;
+                else if(tryrange(buffer[i], mode == CAL ? 1 : 0)) ;
                 else if(tryinst(buffer[i])) ;
             }
             putd(mode);
