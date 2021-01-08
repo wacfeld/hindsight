@@ -8,6 +8,7 @@
 #define putd(x) printf(#x ": %d\n", x)
 
 char helptext[] = "date format yyyy_mm_dd or yyyy-mm-dd\n\
+command format <mode> [date1] [date2] [flags]\n\
 time format hhmm\n\
 commands:\n\
 (h)elp      help\n\
@@ -100,9 +101,9 @@ int tryrange(char *line, int detail)
     char *name = malloc(LINELEN);
     int works = 0;
     if(detail)
-        works = sscanf(line, "%d%*[_-]%d %[^#]", &comp1, &comp2, name) == 3;
+        works = (sscanf(line, "%d%*[_-]%d %[^#]", &comp1, &comp2, name) == 3);
     else
-        works = sscanf(line, "%d%*[_-]%d %s", &comp1, &comp2, name) == 3;
+        works = (sscanf(line, "%d%*[_-]%d %s", &comp1, &comp2, name) == 3);
     if(works)
     {
         h1 = comp1/100, m1 = comp1 % 100;
@@ -244,6 +245,18 @@ void update(struct tm *timestruct)
     *timestruct = *temp;
 }
 
+int checkflag(char *com, char flag)
+{
+    for(int i = 0; com[i] && com[i+1]; i++)
+    {
+        if(com[i] == '-' && com[i+1] == flag)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 char buffer[MAXLINES][LINELEN]; // stores infile
 
 int main(int argc, char *argv[])
@@ -279,11 +292,14 @@ int main(int argc, char *argv[])
     //putd(2);
     char command[LINELEN];
     int comlen;
+    int detail;
     while(printf("--------------------------------------------------------------------------------\n> "), scanf("%[^\n]", command) != EOF) // get commands
     {
         getchar();
 
         freeprev();
+
+        detail = checkflag(command, 'd');
 
         comlen = strlen(command);
 
@@ -302,33 +318,41 @@ int main(int argc, char *argv[])
             c2 = strtok(NULL, " ");
             if(c2[0] == 'a') ; // all
 
-            else if(sscanf(c2, "%d%*[_-]%d%*[_-]%d", &start.tm_year, &start.tm_mon, &start.tm_mday) != 3)
+            else if(sscanf(c2, "%d%*[_-]%d%*[_-]%d", &start.tm_year, &start.tm_mon, &start.tm_mday) != 3) // default to all, probably a flag
             {
-                puts("error: invalid date format");
-                continue;
+                goto defaultdate;
+                //puts("error: invalid date format");
+                //continue;
             }
             start.tm_year -= 1900;
             start.tm_mon--;
 
 
-            if(strlen(c2) + c2 >= command+comlen)
+            if(strlen(c2) + c2 >= command+comlen) // no second date, default to all
             {
-                puts("error: invalid date format");
-                continue;
+                goto defaultdate;
+                //puts("error: invalid date format");
+                //continue;
             }
-
-            c3 = strtok(NULL, " ");
-            if(c3[0] == 'a') ; // all
-
-            else if(sscanf(c3, "%d%*[_-]%d%*[_-]%d", &end.tm_year, &end.tm_mon, &end.tm_mday) != 3)
+            else
             {
-                puts("error: invalid date format");
-                continue;
+
+                c3 = strtok(NULL, " ");
+                if(c3[0] == 'a') ; // all
+
+                else if(sscanf(c3, "%d%*[_-]%d%*[_-]%d", &end.tm_year, &end.tm_mon, &end.tm_mday) != 3) // default to all, probably a flag
+                {
+                    goto defaultdate;
+                    //puts("error: invalid date format");
+                    //continue;
+                }
+                end.tm_year -= 1900;
+                end.tm_mon--;
             }
-            end.tm_year -= 1900;
-            end.tm_mon--;
         }
+defaultdate:
 
+        putd(1);
         freeprev(); // free the mallocs
         numinsts = numacts = 0; // reset
 
@@ -359,14 +383,10 @@ int main(int argc, char *argv[])
                 {
                     if(datecmp(start, curdate) > 0 || datecmp(curdate, end) > 0)
                     {
-                        //puts("datecmp failde");
-                        //puts(asctime(&start));
-                        //puts(asctime(&curdate));
-                        //puts(asctime(&end));
                         if(datecmp(curdate, end) > 0)
                         {
+                            curdate = oldcurdate;
                             goto endearly;
-                            break;
                         }
 
                         skip = 1;
@@ -392,15 +412,11 @@ int main(int argc, char *argv[])
                         update(&oldcurdate);
                         while(datecmp(oldcurdate, curdate) < 0)
                         {
-                        //puts("datecmp worked");
-                        //puts(asctime(&oldcurdate));
-                        //puts(asctime(&curdate));
 
-
-    void update(struct tm *timestruct);
+                            void update(struct tm *timestruct);
                             printf("%04d-%02d-%02d", oldcurdate.tm_year+1900, oldcurdate.tm_mon+1, oldcurdate.tm_mday);
-    update(&oldcurdate);
-    printf("(%s)\n", wdays[oldcurdate.tm_wday]);
+                            update(&oldcurdate);
+                            printf("(%s)\n", wdays[oldcurdate.tm_wday]);
 
                             putchar('\n');
 
@@ -412,9 +428,10 @@ int main(int argc, char *argv[])
                 }
                 else if(skip)
                     continue;
-                else if(tryrange(buffer[i], mode == CAL ? 1 : 0)) ;
+                else if(tryrange(buffer[i], detail)) ;
                 else if(tryinst(buffer[i])) ;
             }
+endearly: ;
             if(mode == CAL)
             {
                 sumdate();
@@ -426,7 +443,6 @@ int main(int argc, char *argv[])
                 freeprev();
             }
 
-endearly: ;
         }
         //if(streq(c1, "
     }
