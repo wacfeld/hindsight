@@ -7,16 +7,16 @@
 #define MAXLINES 10000
 #define putd(x) printf(#x ": %d\n", x)
 
-char helptext[] = "date format yyyy_mm_dd or yyyy-mm-dd\n\
-command format <mode> [date1] [date2] [flags]\n\
-time format hhmm\n\
-commands:\n\
-(h)elp      help\n\
-(s)um       summarize activity between two dates\n\
-s(p)ec      summarize certain activity between two dates\n\
-(c)al       summarize activity by day\n\
-(q)uit      quit, duh";
-
+//char helptext[] = "date format yyyy_mm_dd or yyyy-mm-dd\n\
+//command format <mode> [date1] [date2] [flags]\n\
+//time format hhmm\n\
+//commands:\n\
+//(h)elp      help\n\
+//(s)um       summarize activity between two dates\n\
+//s(p)ec      summarize certain activity between two dates\n\
+//(c)al       summarize activity by day\n\
+//(q)uit      quit, duh";
+//
 char wdays[][50] = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
 enum mode{SPEC, SUM, CAL, HELP, ERR, QUIT};
 
@@ -358,7 +358,11 @@ defaultdate:
         enum mode mode = choosemode(c1);
         if(mode == HELP || mode == ERR)
         {
-            printf("%s\n", helptext);
+            FILE* helpfile = fopen("README.md", "r");
+            int c;
+            while((c = fgetc(helpfile)) != EOF)
+                putchar(c);
+            //printf("%s\n", helptext);
         }
         else if(mode == QUIT)
         {
