@@ -11,19 +11,19 @@ that's why i made it.
 
 also this project is not finished, so the info below is not all correct.
 
-date format: yyyy_mm_dd or yyyy-mm-dd
-time range format: hhmm-hhmm or hhmm_hhmm, time instant format hhmm
-command format: <mode> [date1] [date2] [flags]
-time format hhmm
-commands:
-(h)elp      help
-(s)um       summarize activity between two dates
-s(p)ec      summarize certain activity between two dates
-(c)al       summarize activity by day
-(q)uit      quit, duh
+date format: yyyy_mm_dd or yyyy-mm-dd  
+time range format: hhmm-hhmm or hhmm_hhmm, time instant format hhmm  
+command format: <mode> [date1] [date2] [flags]  
+time format hhmm  
+commands:  
+(h)elp      help  
+(s)um       summarize activity between two dates  
+s(p)ec      summarize certain activity between two dates  
+(c)al       summarize activity by day  
+(q)uit      quit, duh  
 
-flags:
--d          be detailed
-            undetaied task tracking treats the first space-separated word after a time range/instant as the name of the task.
-            detailed task tracking treats rest of the line after a time range/instant as the name of the task.
+flags:  
+-d          be detailed  
+            undetaied task tracking treats the first space-separated word after a time range/instant as the name of the task.  
+            detailed task tracking treats rest of the line after a time range/instant as the name of the task.  
 
