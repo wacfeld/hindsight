@@ -149,7 +149,7 @@ int tryinst(char *line)
 
 void printsum()
 {
-    if(numacts == 0)
+    if(numacts == 0 && numinsts == 0)
     {
         putchar('\n');
         return;
@@ -202,7 +202,7 @@ void sumdate()
     void update(struct tm *timestruct);
     update(&curdate);
     printf("%04d-%02d-%02d", curdate.tm_year+1900, curdate.tm_mon+1, curdate.tm_mday);
-    printf("(%s)\n", wdays[curdate.tm_wday]);
+    printf(",%s\n", wdays[curdate.tm_wday]);
     printsum();
 }
 
@@ -352,7 +352,6 @@ int main(int argc, char *argv[])
         }
 defaultdate:
 
-        putd(1);
         freeprev(); // free the mallocs
         numinsts = numacts = 0; // reset
 
