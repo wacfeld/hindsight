@@ -15,12 +15,18 @@ date format: yyyy_mm_dd or yyyy-mm-dd
 time range format: hhmm-hhmm or hhmm_hhmm, time instant format hhmm  
 command format: <mode> [date1] [date2] [flags]  
 time format hhmm  
+lines starting with # are commented.  
+everything after a # in a task name is commented
+
+run in command line with "./hindsight <filename>"
+
 commands:  
 (h)elp      help  
 (s)um       summarize activity between two dates  
 s(p)ec      summarize certain activity between two dates  
 (c)al       summarize activity by day  
 (q)uit      quit, duh  
+(r)eread    reread file, also updates current day
 
 flags:  
 -d          be detailed  

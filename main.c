@@ -18,7 +18,7 @@
 //(q)uit      quit, duh";
 //
 char wdays[][50] = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
-enum mode{SPEC, SUM, CAL, HELP, ERR, QUIT};
+enum mode{SPEC, SUM, CAL, HELP, ERR, QUIT, REREAD};
 
 typedef struct activity
 {
@@ -218,6 +218,8 @@ enum mode choosemode(char *in)
         return HELP;
     if(streq(in, "quit"))
         return QUIT;
+    if(streq(in, "reread"))
+        return REREAD;
 
     if(strlen(in) > 1)
         return ERR;
@@ -232,6 +234,8 @@ enum mode choosemode(char *in)
             return CAL;
         case 'h':
             return HELP;
+        case 'r':
+            return REREAD;
         case 'q': return QUIT;
     }
 
@@ -259,25 +263,12 @@ int checkflag(char *com, char flag)
 
 char buffer[MAXLINES][LINELEN]; // stores infile
 
-int main(int argc, char *argv[])
+int readfile(char *filename)
 {
+    int b = 0;
     time_t tdy = time(NULL);
     today = localtime(&tdy);
 
-    //putd(argc);
-    char *filename;
-    int b = 0;
-    if(argc > 1)
-    {
-        filename = argv[1];
-    }
-    else
-    {
-        puts("error: no filename");
-        exit(1);
-    }
-
-    //putd(1);
     FILE *infile = fopen(filename, "r");
 
     while(fscanf(infile, "%[^\n]\n", buffer[b++]) != EOF) // read infile into buffer
@@ -288,8 +279,25 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
+    fclose(infile);
+    return b;
+}
 
-    //putd(2);
+int main(int argc, char *argv[])
+{
+    char *filename;
+    if(argc > 1)
+    {
+        filename = argv[1];
+    }
+    else
+    {
+        puts("error: no filename");
+        exit(1);
+    }
+
+    int b = readfile(filename);
+
     char command[LINELEN];
     int comlen;
     int detail;
@@ -314,7 +322,7 @@ int main(int argc, char *argv[])
         if(strlen(c1)+c1 >= command+comlen) ; // no more commands, default to all
 
         else // get specific range, yyyy-mm-dd yyyy-mm-dd
-        {
+            {
             c2 = strtok(NULL, " ");
             if(c2[0] == 'a') ; // all
 
@@ -367,6 +375,10 @@ defaultdate:
         else if(mode == QUIT)
         {
             return 0;
+        }
+        else if(mode == REREAD)
+        {
+            b = readfile(filename);
         }
         else if(mode == SPEC)
         {
@@ -447,17 +459,5 @@ endearly: ;
             }
 
         }
-        //if(streq(c1, "
     }
-
-
-    fclose(infile);
-
-    //struct tm time = {.tm_year = 0, .tm_mon = 0, .tm_mday = 31};
-    //time_t thing;
-    //thing = mktime(&time);
-    //puts(ctime(&thing));
-    //time.tm_mday++;
-    //thing = mktime(&time);
-    //puts(ctime(&thing));
 }
