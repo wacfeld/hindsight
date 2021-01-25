@@ -11,9 +11,9 @@ that's why i made it.
 
 also this project is not finished, so the info below is not all correct.
 
-date format: yyyy_mm_dd or yyyy-mm-dd  
-time range format: hhmm-hhmm or hhmm_hhmm, time instant format hhmm  
-command format: <mode> [date1] [date2] [flags]  
+date format: yyyy\_mm\_dd or yyyy-mm-dd  
+time range format: hhmm-hhmm or hhmm\_hhmm, time instant format hhmm  
+command format: <mode> \[date1\] \[date2\] \[slags\]  
 time format hhmm  
 lines starting with # are commented.  
 everything after a # in a task name is commented

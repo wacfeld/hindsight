@@ -271,8 +271,23 @@ int readfile(char *filename)
 
     FILE *infile = fopen(filename, "r");
 
+    char temp[LINELEN];
+    int noteof;
+
+    while((noteof = (fscanf(infile, "%[^\n]\n", temp) != EOF)) && !streq(temp, "!start")) ;
+    puts(temp);
+    if(!noteof)
+    {
+        fclose(infile);
+        return 0;
+    }
     while(fscanf(infile, "%[^\n]\n", buffer[b++]) != EOF) // read infile into buffer
     {
+        if(streq("!end", buffer[b-1]))
+        {
+            fclose(infile);
+            return b;
+        }
         if(b == MAXLINES)
         {
             puts("error: too many lines");
@@ -298,10 +313,11 @@ int main(int argc, char *argv[])
 
     int b = readfile(filename);
 
+    int scanres;
     char command[LINELEN];
     int comlen;
     int detail;
-    while(printf("--------------------------------------------------------------------------------\n> "), scanf("%[^\n]", command) != EOF) // get commands
+    while(printf("--------------------------------------------------------------------------------\n> "), (scanres = scanf("%[^\n]", command)) != EOF) // get commands
     {
         getchar();
 
@@ -311,6 +327,7 @@ int main(int argc, char *argv[])
 
         comlen = strlen(command);
 
+        if(!scanres) continue;
         char *c1, *c2, *c3;
         c1 = strtok(command, " ");
 
