@@ -274,8 +274,7 @@ int readfile(char *filename)
     char temp[LINELEN];
     int noteof;
 
-    while((noteof = (fscanf(infile, "%[^\n]\n", temp) != EOF)) && !streq(temp, "!start")) ;
-    puts(temp);
+    while((noteof = (fscanf(infile, "%[^\n]\n", temp) != EOF)) && !streq(temp, "!!!start")) ;
     if(!noteof)
     {
         fclose(infile);
@@ -283,7 +282,7 @@ int readfile(char *filename)
     }
     while(fscanf(infile, "%[^\n]\n", buffer[b++]) != EOF) // read infile into buffer
     {
-        if(streq("!end", buffer[b-1]))
+        if(streq("!!!end", buffer[b-1]))
         {
             fclose(infile);
             return b;
