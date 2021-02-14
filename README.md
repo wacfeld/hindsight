@@ -11,7 +11,7 @@ that's why i made it.
 
 also this project is not finished, so the info below is not all correct.
 
-date format: yyyy\_mm\_dd or yyyy-mm-dd  
+## date format: yyyy\_mm\_dd or yyyy-mm-dd  
 time range (activity) format: hhmm-hhmm or hhmm\_hhmm, time instant format hhmm  
 command format: <mode> \[date1\] \[date2\] \[slags\]  
 time format hhmm  
@@ -20,7 +20,7 @@ everything after a # in a task name is commented
 
 run in command line with "./hindsight <filename>"
 
-commands:  
+## commands:  
 (h)elp      help  
 (s)um       summarize activity between two dates  
 s(p)ec      summarize certain activity between two dates  
@@ -28,7 +28,7 @@ s(p)ec      summarize certain activity between two dates
 (q)uit      quit, duh  
 (r)eread    reread file, also updates current day
 
-flags:  
+## flags:  
 -d          be detailed  
             undetaied task tracking treats the first space-separated word after a time range/instant as the name of the task.  
             detailed task tracking treats rest of the line after a time range/instant as the name of the task.  
@@ -39,7 +39,7 @@ flags:
 -l          log  
             lists all tasks on single line (one line per day for calendar mode), separated by semicolons, without giving times.
 
-installation/setup:  
+## installation/setup:  
 `cc main.c -o hsight` to install.  
 `/path/to/hsight hindsight.txt` to run.  
 format `hindsight.txt` as described above. everything before `!!!start` and after `!!!end` (by themselves on one line) in the file is ignored.  
