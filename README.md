@@ -33,10 +33,18 @@ flags:
             undetaied task tracking treats the first space-separated word after a time range/instant as the name of the task.  
             detailed task tracking treats rest of the line after a time range/instant as the name of the task.  
 
--s          sort
+-s          sort  
             sorts activities (not instants) by time spent, descending order.
 
--l          'log'
-            lists all tasks on single line (one line per day for calendar mode), separated by semicolons, without givings times.
+-l          log  
+            lists all tasks on single line (one line per day for calendar mode), separated by semicolons, without giving times.
 
+installation/setup:  
+`cc main.c -o hsight` to install.  
+`/path/to/hsight hindsight.txt` to run.  
+format `hindsight.txt` as described above. everything before `!!!start` and after `!!!end` (by themselves on one line) in the file is ignored.  
 
+personally i use vim, so i also have the below mappings to facilitate use:  
+`nnoremap <silent> <leader>h :e /path/to/hindsight.txt<cr>gg/!!!end<cr>:nohl<cr>`  
+`nnoremap <silent> <leader>H :e /path/to/hindsight.txt<cr>gg/!!!end<cr>:nohl<cr>:term<cr><c-w>Lrlwrap /path/to/hsight /path/to/hindsight.txt<cr>`  
+the first one opens `hindsight.txt` and navigates to the latest date. the second one does the same, then opens a terminal alongside that and runs `hsight`.
