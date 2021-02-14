@@ -45,6 +45,24 @@ installation/setup:
 format `hindsight.txt` as described above. everything before `!!!start` and after `!!!end` (by themselves on one line) in the file is ignored.  
 
 personally i use vim, so i also have the below mappings to facilitate use:  
-`nnoremap <silent> <leader>h :e /path/to/hindsight.txt<cr>gg/!!!end<cr>:nohl<cr>`  
-`nnoremap <silent> <leader>H :e /path/to/hindsight.txt<cr>gg/!!!end<cr>:nohl<cr>:term<cr><c-w>Lrlwrap /path/to/hsight /path/to/hindsight.txt<cr>`  
+```
+nnoremap <silent> <leader>h :e /path/to/hindsight.txt<cr>gg/!!!end<cr>:nohl<cr>  
+nnoremap <silent> <leader>H :e /path/to/hindsight.txt<cr>gg/!!!end<cr>:nohl<cr>:term<cr><c-w>Lrlwrap /path/to/hsight /path/to/hindsight.txt<cr>  
+```
 the first one opens `hindsight.txt` and navigates to the latest date. the second one does the same, then opens a terminal alongside that and runs `hsight`.
+
+i also use these for time/date insertion:
+```
+inoremap <silent> <f3> <C-R>=strftime("%F,%a")<CR><esc>hh~la
+cnoremap <f3> <C-R>=strftime("%F,%a")<CR>
+nnoremap <silent> <f3> i<C-R>=strftime("%F,%a")<CR><esc>hh~ll
+
+inoremap <silent> <S-f3> <C-r>=strftime("%H%M")<CR>
+cnoremap <S-f3> <C-r>=strftime("%H%M")<CR>
+nnoremap <silent> <S-f3> i<C-r>=strftime("%H%M")<CR><esc>l
+
+nnoremap <silent> <m-s-f3> 4s<C-r>=strftime("%H%M")<CR><esc>3h
+
+nnoremap <silent> <m-f3> 14s<C-R>=strftime("%F,%a")<CR><esc>hh~ll
+```
+these insert the date, insert the time, and replace the date/time, respectively, in various modes.
