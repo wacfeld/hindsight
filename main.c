@@ -38,7 +38,13 @@ struct tm oldcurdate;
 activity acts[MAXACTS];
 int numacts = 0;
 
+int f_detail, f_sort, f_log;
 enum mod{SET, ADD};
+
+int compact(const void* a1, const void* a2)
+{
+    return ((activity *) a2)->mins - ((activity *)a1)->mins;
+}
 
 int streq(char *c1, char *c2)
 {
@@ -91,7 +97,7 @@ int trydate(char *line)
     return 0;
 }
 
-int tryrange(char *line, int detail)
+int tryrange(char *line, int f_detail)
 {
     int comp1, comp2;
     int h1,m1, h2,m2;
@@ -100,7 +106,7 @@ int tryrange(char *line, int detail)
 
     char *name = malloc(LINELEN);
     int works = 0;
-    if(detail)
+    if(f_detail)
         works = (sscanf(line, "%d%*[_-]%d %[^#]", &comp1, &comp2, name) == 3);
     else
         works = (sscanf(line, "%d%*[_-]%d %s", &comp1, &comp2, name) == 3);
@@ -149,26 +155,48 @@ int tryinst(char *line)
 
 void printsum()
 {
+    if(f_sort) // f_sort by time given
+    {
+        qsort(acts, numacts, sizeof(activity), compact);
+    }
+
+    // if empty, stop
     if(numacts == 0 && numinsts == 0)
     {
         putchar('\n');
         return;
     }
 
+    if(!f_log)
+    {
+        // print insts
+        if(numinsts == 0) return;
+        for(int i = 0; i < numinsts; i++)
+        {
+            printf("\t%-20s %02d:%02d\n", insts[i], insttimes[i]/100, insttimes[i]%100);
+        }
+        putchar('\n');
+    }
+
+    // print acts
     int sum = 0;
     for(int i = 0; i < numacts; i++)
     {
-        printf("\t%-20s %02d:%02d\n", acts[i].name, acts[i].mins/60, acts[i].mins%60);
+        if(!f_log)
+        {
+            printf("\t%-20s %02d:%02d\n", acts[i].name, acts[i].mins/60, acts[i].mins%60);
+        }
+        else
+        {
+            printf(" %s;", acts[i].name);
+        }
         sum += acts[i].mins;
     }
-    printf("\t%-20s %02d:%02d\n", "SUM TOTAL", sum/60, sum%60);
-
-    putchar('\n');
-    if(numinsts == 0) return;
-    for(int i = 0; i < numinsts; i++)
+    if(!f_log)
     {
-        printf("\t%-20s %02d:%02d\n", insts[i], insttimes[i]/100, insttimes[i]%100);
+        printf("\n\t%-20s %02d:%02d\n", "SUM TOTAL", sum/60, sum%60);
     }
+
     putchar('\n');
 }
 
@@ -202,7 +230,11 @@ void sumdate()
     void update(struct tm *timestruct);
     update(&curdate);
     printf("%04d-%02d-%02d", curdate.tm_year+1900, curdate.tm_mon+1, curdate.tm_mday);
-    printf(",%s\n", wdays[curdate.tm_wday]);
+    printf(",%s", wdays[curdate.tm_wday]);
+    if(!f_log)
+        putchar('\n');
+    else
+        putchar(':');
     printsum();
 }
 
@@ -249,13 +281,21 @@ void update(struct tm *timestruct)
     *timestruct = *temp;
 }
 
+// TODO implement timeless ?-? activities
+// TODO implement duration-specified, interval-less activities
+// TODO implement option to blacklist/whitelist activities
+// TODO option to expand blank days, both on log and not log
 int checkflag(char *com, char flag)
 {
     for(int i = 0; com[i] && com[i+1]; i++)
     {
-        if(com[i] == '-' && com[i+1] == flag)
+        if(com[i] == '-')
         {
-            return 1;
+            for(i++; com[i] && com[i] != ' '; i++) // move to next, check until end or space
+            {
+                if(com[i] == flag)
+                    return 1;
+            }
         }
     }
     return 0;
@@ -297,6 +337,7 @@ int readfile(char *filename)
     return b;
 }
 
+
 int main(int argc, char *argv[])
 {
     char *filename;
@@ -315,14 +356,16 @@ int main(int argc, char *argv[])
     int scanres;
     char command[LINELEN];
     int comlen;
-    int detail;
+
     while(printf("--------------------------------------------------------------------------------\n> "), (scanres = scanf("%[^\n]", command)) != EOF) // get commands
     {
         getchar();
 
         freeprev();
 
-        detail = checkflag(command, 'd');
+        f_detail = checkflag(command, 'd');
+        f_sort   = checkflag(command, 's');
+        f_log    = checkflag(command, 'l');
 
         comlen = strlen(command);
 
@@ -338,7 +381,7 @@ int main(int argc, char *argv[])
         if(strlen(c1)+c1 >= command+comlen) ; // no more commands, default to all
 
         else // get specific range, yyyy-mm-dd yyyy-mm-dd
-            {
+        {
             c2 = strtok(NULL, " ");
             if(c2[0] == 'a') ; // all
 
@@ -439,30 +482,58 @@ defaultdate:
                         first = 0;
                     else if(mode == CAL)
                     {
+                        int numdays = 0;
+
                         oldcurdate.tm_mday++;
                         update(&oldcurdate);
-                        while(datecmp(oldcurdate, curdate) < 0)
+                        if(datecmp(oldcurdate, curdate) < 0)
+                        {
+                            printf("(%04d-%02d-%02d", oldcurdate.tm_year+1900, oldcurdate.tm_mon+1, oldcurdate.tm_mday);
+                            //update(&oldcurdate); // probably unnecessary line, right?
+                            printf(",%s -- ", wdays[oldcurdate.tm_wday]);
+
+                            while(datecmp(oldcurdate, curdate) < 0)
+                            {
+                                numdays++;
+                                oldcurdate.tm_mday++;
+                                update(&oldcurdate);
+                            }
+
+                            oldcurdate.tm_mday--;
+                            update(&oldcurdate);
+                            printf("%04d-%02d-%02d", oldcurdate.tm_year+1900, oldcurdate.tm_mon+1, oldcurdate.tm_mday);
+                            //update(&oldcurdate); // probably unnecessary line, right?
+                            printf(",%s; %d days)\n", wdays[oldcurdate.tm_wday], numdays);
+                            if(!f_log)
+                                putchar('\n');
+
+                            oldcurdate.tm_mday++;
+                            update(&oldcurdate);
+                        }
+/*                        while(datecmp(oldcurdate, curdate) < 0)
                         {
 
                             void update(struct tm *timestruct);
-                            printf("%04d-%02d-%02d", oldcurdate.tm_year+1900, oldcurdate.tm_mon+1, oldcurdate.tm_mday);
+                            printf("(%04d-%02d-%02d", oldcurdate.tm_year+1900, oldcurdate.tm_mon+1, oldcurdate.tm_mday);
                             update(&oldcurdate);
-                            printf("(%s)\n", wdays[oldcurdate.tm_wday]);
+                            printf(",%s)\n", wdays[oldcurdate.tm_wday]);
 
                             putchar('\n');
 
                             oldcurdate.tm_mday++;
                             update(&oldcurdate);
-                        }
+                        }*/
                     }
 
                 }
                 else if(skip)
                     continue;
-                else if(tryrange(buffer[i], detail)) ;
+                else if(tryrange(buffer[i], f_detail)) ;
                 else if(tryinst(buffer[i])) ;
             }
+
 endearly: ;
+
             if(mode == CAL)
             {
                 sumdate();

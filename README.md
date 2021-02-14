@@ -12,7 +12,7 @@ that's why i made it.
 also this project is not finished, so the info below is not all correct.
 
 date format: yyyy\_mm\_dd or yyyy-mm-dd  
-time range format: hhmm-hhmm or hhmm\_hhmm, time instant format hhmm  
+time range (activity) format: hhmm-hhmm or hhmm\_hhmm, time instant format hhmm  
 command format: <mode> \[date1\] \[date2\] \[slags\]  
 time format hhmm  
 lines starting with # are commented.  
@@ -32,4 +32,11 @@ flags:
 -d          be detailed  
             undetaied task tracking treats the first space-separated word after a time range/instant as the name of the task.  
             detailed task tracking treats rest of the line after a time range/instant as the name of the task.  
+
+-s          sort
+            sorts activities (not instants) by time spent, descending order.
+
+-l          'log'
+            lists all tasks on single line (one line per day for calendar mode), separated by semicolons, without givings times.
+
 
