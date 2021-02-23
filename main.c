@@ -285,6 +285,9 @@ void update(struct tm *timestruct)
 // TODO implement duration-specified, interval-less activities
 // TODO implement option to blacklist/whitelist activities
 // TODO option to expand blank days, both on log and not log
+// TODO option to show uncompleted things in the past, like the * ! mechanic that current had
+// TODO idiotproof
+// TODO somehow implement "anticipated" time and "actual" time, somehow, somehow.
 int checkflag(char *com, char flag)
 {
     for(int i = 0; com[i] && com[i+1]; i++)
