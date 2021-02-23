@@ -134,6 +134,25 @@ output would look like this
  school english; books war and peace; school math; bigproject part 1; bigproject part 2; books a farewell to arms; bigproject part 3, 4; bigproject part 5;
 ```
 
+personally i like to put future days after !!!end, like an agenda, and then move them up when the time comes.
+```
+!!!start
+[past days]
+
+2021_02_22,1
+    1040 wake
+    2228-2258 climbtree
+
+!!!end
+
+2021_02_23,2 tree climbing exam
+2021_02_24,3 SAT exam; AP exam
+2021_02_25,4 ACT exam
+2021_02_26,5 bar exam
+2021_02_27,6 driving exam
+2021_02_28,7 exam exam
+[etc.]
+```
 
 ## commands:  
 (h)elp      help  
