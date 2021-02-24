@@ -170,12 +170,10 @@ void printsum()
     if(!f_log)
     {
         // print insts
-        if(numinsts == 0) return;
         for(int i = 0; i < numinsts; i++)
         {
-            printf("\t%-20s %02d:%02d\n", insts[i], insttimes[i]/100, insttimes[i]%100);
+            printf("  %-20s %02d:%02d\n", insts[i], insttimes[i]/100, insttimes[i]%100);
         }
-        putchar('\n');
     }
 
     // print acts
@@ -184,7 +182,7 @@ void printsum()
     {
         if(!f_log)
         {
-            printf("\t%-20s %02d:%02d\n", acts[i].name, acts[i].mins/60, acts[i].mins%60);
+            printf("    %-20s %02d:%02d\n", acts[i].name, acts[i].mins/60, acts[i].mins%60);
         }
         else
         {
@@ -194,7 +192,7 @@ void printsum()
     }
     if(!f_log)
     {
-        printf("\n\t%-20s %02d:%02d\n", "SUM TOTAL", sum/60, sum%60);
+        printf("      %-20s %02d:%02d\n", "SUM TOTAL", sum/60, sum%60);
     }
 
     putchar('\n');
