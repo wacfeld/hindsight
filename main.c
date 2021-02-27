@@ -38,9 +38,14 @@ struct tm oldcurdate;
 activity acts[MAXACTS];
 int numacts = 0;
 
-int f_detail, f_sort, f_log;
+int f_detail, f_sort_t, f_sort_n, f_log;
+
 enum mod{SET, ADD};
 
+int compname(const void *a1, const void *a2)
+{
+    return -strcmp(((activity *) a2)->name, ((activity *) a1)->name);
+}
 int compact(const void* a1, const void* a2)
 {
     return ((activity *) a2)->mins - ((activity *)a1)->mins;
@@ -155,9 +160,13 @@ int tryinst(char *line)
 
 void printsum()
 {
-    if(f_sort) // f_sort by time given
+    if(f_sort_t) // sort by time given
     {
         qsort(acts, numacts, sizeof(activity), compact);
+    }
+    else if(f_sort_n) // sort by activity name
+    {
+        qsort(acts, numacts, sizeof(activity), compname);
     }
 
     // if empty, stop
@@ -365,7 +374,8 @@ int main(int argc, char *argv[])
         freeprev();
 
         f_detail = checkflag(command, 'd');
-        f_sort   = checkflag(command, 's');
+        f_sort_t = checkflag(command, 's');
+        f_sort_n = checkflag(command, 'S');
         f_log    = checkflag(command, 'l');
 
         comlen = strlen(command);
