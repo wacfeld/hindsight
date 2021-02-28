@@ -38,7 +38,7 @@ struct tm oldcurdate;
 activity acts[MAXACTS];
 int numacts = 0;
 
-int f_detail, f_sort_t, f_sort_n, f_log;
+int f_detail, f_sort_t, f_sort_n, f_log, f_spec;
 
 enum mod{SET, ADD};
 
@@ -114,7 +114,7 @@ int tryrange(char *line, int f_detail)
     if(f_detail)
         works = (sscanf(line, "%d%*[_-]%d %[^#]", &comp1, &comp2, name) == 3);
     else
-        works = (sscanf(line, "%d%*[_-]%d %s", &comp1, &comp2, name) == 3);
+        works = (sscanf(line, "%d%*[_-]%d %[^# ]", &comp1, &comp2, name) == 3);
     if(works)
     {
         h1 = comp1/100, m1 = comp1 % 100;
@@ -377,6 +377,7 @@ int main(int argc, char *argv[])
         f_sort_t = checkflag(command, 's');
         f_sort_n = checkflag(command, 'S');
         f_log    = checkflag(command, 'l');
+        f_spec   = checkflag(command, 'p');
 
         comlen = strlen(command);
 
