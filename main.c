@@ -39,6 +39,7 @@ activity acts[MAXACTS];
 int numacts = 0;
 
 int f_detail, f_sort_t, f_sort_n, f_log, f_spec;
+char a_spec[LINELEN];
 
 enum mod{SET, ADD};
 
@@ -102,7 +103,12 @@ int trydate(char *line)
     return 0;
 }
 
-int tryrange(char *line, int f_detail)
+int match(char *arg, char *name)
+{
+    return strlen(arg) <= strlen(name) && strncmp(arg, name, strlen(arg)) == 0;
+}
+
+int tryrange(char *line)
 {
     int comp1, comp2;
     int h1,m1, h2,m2;
@@ -115,6 +121,10 @@ int tryrange(char *line, int f_detail)
         works = (sscanf(line, "%d%*[_-]%d %[^#]", &comp1, &comp2, name) == 3);
     else
         works = (sscanf(line, "%d%*[_-]%d %[^# ]", &comp1, &comp2, name) == 3);
+    if(!works)
+        return 0;
+    if(f_spec && !match(a_spec, name))
+        return -1;
     if(works)
     {
         h1 = comp1/100, m1 = comp1 % 100;
@@ -132,8 +142,6 @@ int tryrange(char *line, int f_detail)
         modact(name, ADD, diff);
         return 1;
     }
-
-    return 0;
 }
 
 int tryinst(char *line)
@@ -154,6 +162,8 @@ int tryinst(char *line)
     char *name = malloc(LINELEN);
     if(sscanf(line, "%d %s", &time, name) == 2)
     {
+        if(f_spec && !match(a_spec, name))
+            return 0;
         addinst(name, time);
     }
 }
@@ -295,7 +305,7 @@ void update(struct tm *timestruct)
 // TODO option to show uncompleted things in the past, like the * ! mechanic that current had
 // TODO idiotproof
 // TODO somehow implement "anticipated" time and "actual" time, somehow, somehow.
-int checkflag(char *com, char flag)
+int checkflag(char *com, char flag, char *arg)
 {
     for(int i = 0; com[i] && com[i+1]; i++)
     {
@@ -304,7 +314,17 @@ int checkflag(char *com, char flag)
             for(i++; com[i] && com[i] != ' '; i++) // move to next, check until end or space
             {
                 if(com[i] == flag)
+                {
+                    if(arg)
+                    {
+                        com += i + 1; // move to right after flag
+                        if(sscanf(com, " '%[^']'", arg) == 1 || sscanf(com, " \"%[^\"]\"", arg) == 1)
+                            return 1;
+                        return 0;
+
+                    }
                     return 1;
+                }
             }
         }
     }
@@ -373,11 +393,11 @@ int main(int argc, char *argv[])
 
         freeprev();
 
-        f_detail = checkflag(command, 'd');
-        f_sort_t = checkflag(command, 's');
-        f_sort_n = checkflag(command, 'S');
-        f_log    = checkflag(command, 'l');
-        f_spec   = checkflag(command, 'p');
+        f_detail = checkflag(command, 'd', NULL);
+        f_sort_t = checkflag(command, 's', NULL);
+        f_sort_n = checkflag(command, 'S', NULL);
+        f_log    = checkflag(command, 'l', NULL);
+        f_spec   = checkflag(command, 'p', a_spec);
 
         comlen = strlen(command);
 
@@ -540,7 +560,7 @@ defaultdate:
                 }
                 else if(skip)
                     continue;
-                else if(tryrange(buffer[i], f_detail)) ;
+                else if(tryrange(buffer[i]) != 0) ;
                 else if(tryinst(buffer[i])) ;
             }
 
