@@ -8,7 +8,7 @@ a time-tracking program inspired by the clocking function of emacs' org-mode.
 2. [example](#example)
 3. [commands](#commands)
 4. [flags](#flags)
-5. [installation/setup](#installation/setup)
+5. [installation/setup](#installation\/setup)
 
 ## overview
 
