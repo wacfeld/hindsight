@@ -1,5 +1,16 @@
 # hindsight
+
 a time-tracking program inspired by the clocking function of emacs' org-mode.
+
+## table of contents
+# Table of Contents
+1. [overview](#)
+2. [example](#example)
+3. [commands](#commands)
+4. [flags](#flags)
+5. [installation/setup](#installation/setup)
+
+## overview
 
 the difference is that emacs list times under tasks, while this lists tasks next to times under days.
 i think this is a nicer, cleaner way to list things.
@@ -173,8 +184,8 @@ personally i like to put future days after !!!end, like an agenda, and then move
 -l          log  
             lists all tasks on single line (one line per day for calendar mode), separated by semicolons, without giving times.
 
--p "<pat>"  pattern  
-            lists only tasks/instants starting with <pat>. regex is not yet supported, however
+-p "\<pat\>"  pattern  
+            lists only tasks/instants starting with \<pat\>. regex is not yet supported, however
 
 ## installation/setup:  
 `cc main.c -o hsight` to install.  
