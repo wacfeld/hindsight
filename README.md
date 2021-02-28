@@ -15,10 +15,8 @@ date format: yyyy\_mm\_dd or yyyy-mm-dd
 time range (activity) format: hhmm-hhmm or hhmm\_hhmm, time instant format hhmm  
 command format: <mode> \[date1\] \[date2\] \[slags\]  
 time format hhmm  
-lines starting with # are commented.  
+lines starting with # are commented  
 everything after a # in a task name is commented
-
-run in command line with "./hindsight <filename>"
 
 ## example:
 input file would look like this
@@ -157,7 +155,6 @@ personally i like to put future days after !!!end, like an agenda, and then move
 ## commands:  
 (h)elp      help  
 (s)um       summarize activity between two dates  
-s(p)ec      summarize certain activity between two dates  
 (c)al       summarize activity by day  
 (q)uit      quit, duh  
 (r)eread    reread file, also updates current day
@@ -167,11 +164,17 @@ s(p)ec      summarize certain activity between two dates
             undetaied task tracking treats the first space-separated word after a time range/instant as the name of the task.  
             detailed task tracking treats rest of the line after a time range/instant as the name of the task.  
 
--s          sort  
+-s          sort by time  
             sorts activities (not instants) by time spent, descending order.
+
+-S          sort by name  
+            sorts activities (not instants) by their names alphabetically
 
 -l          log  
             lists all tasks on single line (one line per day for calendar mode), separated by semicolons, without giving times.
+
+-p "<pat>"  pattern  
+            lists only tasks/instants starting with <pat>. regex is not yet supported, however
 
 ## installation/setup:  
 `cc main.c -o hsight` to install.  
