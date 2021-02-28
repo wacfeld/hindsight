@@ -3,7 +3,7 @@
 a time-tracking program inspired by the clocking function of emacs' org-mode.
 
 ## table of contents
-1. [overview](#)
+1. [overview](#overview)
 2. [example](#example)
 3. [commands](#commands)
 4. [flags](#flags)
