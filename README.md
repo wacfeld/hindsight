@@ -7,7 +7,7 @@ a time-tracking program inspired by the clocking function of emacs' org-mode.
 2. [example](#example)
 3. [commands](#commands)
 4. [flags](#flags)
-5. [installation/setup](#installation\/setup)
+5. [installation/setup](#inst)
 
 ## overview
 
@@ -186,7 +186,7 @@ personally i like to put future days after !!!end, like an agenda, and then move
 -p "\<pat\>"  pattern  
             lists only tasks/instants starting with \<pat\>. regex is not yet supported, however
 
-## installation/setup:  
+## installation/setup:<a name="inst"></a>  
 `cc main.c -o hsight` to install.  
 `/path/to/hsight hindsight.txt` to run.  
 format `hindsight.txt` as described above. everything before `!!!start` and after `!!!end` (by themselves on one line) in the file is ignored.  
